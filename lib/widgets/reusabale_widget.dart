@@ -5,6 +5,24 @@ Image logoWidget(String imagename){
       imagename,
       fit: BoxFit.fitWidth,
       width: 350,
-      height: 270
+      height: 280
+  );
+}
+
+Image logofWidget(String imagename){
+  return Image.asset(
+      imagename,
+      fit: BoxFit.fitWidth,
+      width: 350,
+      height: 350
+  );
+}
+
+Image logovWidget(String imagename){
+  return Image.asset(
+      imagename,
+      fit: BoxFit.fitWidth,
+      width: 250,
+      height: 350
   );
 }

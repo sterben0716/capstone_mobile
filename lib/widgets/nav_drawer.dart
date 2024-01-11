@@ -1,6 +1,13 @@
-import 'package:capstone_clenro/UI/about_page.dart';
+import 'package:capstone_clenro/UI/login_page.dart';
+import 'package:capstone_clenro/UI/sidebar_pages/about_page.dart';
+import 'package:capstone_clenro/UI/sidebar_pages/edit_profile.dart';
+import 'package:capstone_clenro/UI/sidebar_pages/profile_page.dart';
+import 'package:capstone_clenro/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:capstone_clenro/widgets/drawer_item.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 class CustomNavigationDrawer extends StatefulWidget {
   const CustomNavigationDrawer({Key? key}) : super(key: key);
@@ -10,59 +17,92 @@ class CustomNavigationDrawer extends StatefulWidget {
 }
 
 class _CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
+  User? user;
+
+  @override
+  void initState() {
+    super.initState();
+    getDataFromStorage();
+  }
+
+  Future? getDataFromStorage() async {
+    user = await User.getUser();
+    setState(() {});
+  }
+  void showAlert()async {
+    QuickAlert.show(
+      context: context,
+      type: QuickAlertType.warning,
+      title: 'Are you sure',
+      text: 'do you want to log out?',
+      confirmBtnText: 'Yes',
+      cancelBtnText: 'No',
+      confirmBtnColor: Colors.teal,
+      showCancelBtn: true,
+      onConfirmBtnTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()),
+        );
+      }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: Material(
-        color: Colors.green,
+        color: const Color(0xFF009E60),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(24.0, 80, 24, 0),
           child: Column(
             children: [
               headerWidget(),
               const SizedBox(height: 10,),
-              const Divider(thickness: 1, height: 10, color: Colors.lightGreen,),
+              const Divider(thickness: 1, height: 10, color: Colors.white,),
               const SizedBox(height: 10,),
               DrawerItem(
-                name: 'My Profile',
+                name: 'Account',
                 icon: Icons.account_circle,
-                onPressed: ()=> onItemPressed(context, index: 0),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProfilePage()),
+                  );
+                }
               ),
               const SizedBox(height: 10,),
               DrawerItem(
-                name: 'Settings',
+                name: 'Profile Settings',
                 icon: Icons.settings,
-                onPressed: ()=> onItemPressed(context, index: 1),
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfile()),
+                  );
+                }
               ),
               const SizedBox(height: 10,),
               DrawerItem(
                 name: 'Notifications',
                 icon: Icons.notifications_active,
-                onPressed: ()=> onItemPressed(context, index: 1),
-              ),
-              const SizedBox(height: 10,),
-              DrawerItem(
-                name: 'FAQs',
-                icon: Icons.chat,
-                onPressed: ()=> onItemPressed(context, index: 1),
-              ),
-              const SizedBox(height: 10,),
-              DrawerItem(
-                name: 'Share',
-                icon: Icons.share_outlined,
-                onPressed: ()=> onItemPressed(context, index: 1),
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()),
+                  );
+                },
               ),
               const SizedBox(height: 10,),
               DrawerItem(
                 name: 'About',
-                icon: Icons.info_outline_rounded,
-                onPressed: ()=> onItemPressed(context, index: 1),
+                icon: Icons.info,
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => AboutPage()),
+                  );
+                },
               ),
               const SizedBox(height: 10,),
               DrawerItem(
                 name: 'Log Out',
                 icon: Icons.logout,
-                onPressed: ()=> onItemPressed(context, index: 1),
+                onPressed: () {
+                  showAlert();
+                },
               ),
             ],
           ),
@@ -71,32 +111,20 @@ class _CustomNavigationDrawerState extends State<CustomNavigationDrawer> {
     );
   }
 
-  void onItemPressed(BuildContext context, {required int index}){
-    Navigator.pop(context);
-
-    switch(index){
-      case 0:
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>AboutPage()));
-        break;
-      default:
-        Navigator.pop(context);
-        break;
-    }
-  }
   Widget headerWidget(){
     return Row(
       children: [
         const CircleAvatar(
-          radius: 40,
+          radius: 30,
           backgroundImage: AssetImage('images/profpic.jpg'),
         ),
         const SizedBox(width: 20,),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            Text('Japhet Steve Ong', style: TextStyle(fontSize: 16, color: Colors.white)),
-            SizedBox(height: 10,),
-            Text('japhet@email.com', style: TextStyle(fontSize: 14, color: Colors.white),)
+          children: [
+            Text('${user?.username}', style: GoogleFonts.sofiaSans(fontSize: 16, color: Colors.white)),
+            const SizedBox(height: 5,),
+            Text('${user?.email}', style: GoogleFonts.sofiaSans(fontSize: 14, color: Colors.white),)
           ],
         )
       ],

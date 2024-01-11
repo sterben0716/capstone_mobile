@@ -1,7 +1,8 @@
 import 'package:capstone_clenro/UI/bin_status.dart';
 import 'package:capstone_clenro/UI/home_page.dart';
-import 'package:capstone_clenro/UI/location.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:capstone_clenro/UI/map_page.dart';
+import 'package:capstone_clenro/UI/sample_chart.dart';
+import 'package:capstone_clenro/UI/tracking_page.dart';
 import 'package:flutter/material.dart';
 
 
@@ -14,53 +15,44 @@ class Navigation extends StatefulWidget {
 
 class _NavigationState extends State<Navigation> {
 
-  final items = const [
-    Icon(Icons.location_on_outlined, size: 30,),
-    Icon(Icons.home, size: 30,),
-    Icon(Icons.data_exploration_outlined, size: 30,)
+  int myCurrentIndex = 0;
+  List pages = const[
+    HomePage(),
+    BinStatus(),
+    MapPage(),
 
   ];
-
-  int index = 1;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: CurvedNavigationBar(
-        items: items,
-        index: index,
-        onTap: (selectedIndex){
-          setState(() {
-            index = selectedIndex;
-          });
-        },
-        height: 70,
-        backgroundColor: Colors.lightGreen,
-        animationDuration: const Duration(microseconds: 300),
-      ),
-      body: Container(
-          color: Colors.blue,
-          width: double.infinity,
-          height: double.infinity,
-          alignment: Alignment.center,
-          child: getSelectedWidget(index: index)
-      ),
-    );
-  }
-
-  Widget getSelectedWidget({required int index}){
-    Widget widget;
-    switch(index){
-      case 0:
-        widget = const Location();
-        break;
-      case 1:
-        widget = const HomePage();
-        break;
-      default:
-        widget = const BinStatus();
-        break;
-    }
-    return widget;
+      bottomNavigationBar: Container(
+        height: 60,
+        decoration: const BoxDecoration(boxShadow: [
+          BoxShadow(
+            color: Colors.black,
+            blurRadius: .5,
+          )
+        ]),
+        child: BottomNavigationBar(
+          elevation: 2,
+          backgroundColor: Colors.white,
+          selectedItemColor: Color(0xFF009E60),
+          unselectedItemColor: Colors.black,
+          currentIndex: myCurrentIndex,
+          onTap: (index) {
+            setState(() {
+              myCurrentIndex = index;
+            });
+          },
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(icon: Icon(Icons.data_exploration), label: 'Bin Status'),
+            BottomNavigationBarItem(icon: Icon(Icons.location_on), label: 'Location')
+          ],
+        ),
+        ),
+      body: pages[myCurrentIndex],
+      );
   }
 }

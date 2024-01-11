@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class DrawerItem extends StatelessWidget {
   const DrawerItem({Key? key, required this.name, required this.icon, required this.onPressed}) : super(key: key);
@@ -17,7 +18,7 @@ class DrawerItem extends StatelessWidget {
           children: [
             Icon(icon, size: 20, color: Colors.white,),
             const SizedBox(width: 40,),
-            Text(name, style: const TextStyle(fontSize: 20, color: Colors.white),)
+            Text(name, style: GoogleFonts.sofiaSans(fontSize: 20, color: Colors.white),)
           ],
         ),
       ),

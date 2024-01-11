@@ -6,16 +6,20 @@ class Chart extends StatefulWidget {
 
   @override
   State<Chart> createState() => _ChartState();
+
 }
 
 class _ChartState extends State<Chart> {
+
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
         width: double.infinity,
-        height: 400,
+        height: 420,
         decoration: BoxDecoration(
-          color: Colors.lightGreen,
+          color: Color(0xFF00A36C),
           borderRadius: BorderRadius.all(Radius.circular(10))
         ),
         child: SfCartesianChart(
@@ -74,8 +78,10 @@ class _ChartState extends State<Chart> {
   }
 }
 
+
 class BinData{
   BinData(this.meter,this.height);
   final String height;
   final int meter;
+
 }

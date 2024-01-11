@@ -21,9 +21,11 @@ class _BinStatusState extends State<BinStatus> {
     return Scaffold(
       drawer: const CustomNavigationDrawer(),
       appBar: AppBar(
-        title: const Text('Bin Status'),
+        title: Text('Bin Status',
+          style: GoogleFonts.sofiaSans(fontSize: 22, fontWeight: FontWeight.bold),
+        ),
         centerTitle: false,
-        backgroundColor: Colors.green,
+        backgroundColor: Color(0xFF009E60),
       ),
       body: Row(
         children: [
@@ -31,28 +33,29 @@ class _BinStatusState extends State<BinStatus> {
             padding: EdgeInsets.symmetric(horizontal: Constants.defaultPadding *2),
             child: Column(
               children: [
-              Row(children: [
+                SizedBox(height: 20,),
+                Row(children: [
                 Expanded(child: Container(
                   padding: EdgeInsets.all(Constants.defaultPadding),
                   height: 160,
                   width: 250,
                   decoration: const BoxDecoration(
-                    color: Colors.lightGreen,
+                    color: Color(0xFF00A36C),
                     borderRadius: BorderRadius.all(Radius.circular(10))
                   ),
                   child: Row(children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                      Text('Waste Level', style: GoogleFonts.ubuntu(
+                      Text('Waste Level', style: GoogleFonts.sofiaSans(
                           color: Colors.white,
                           fontSize: 24,
                           fontWeight: FontWeight.w600
                       ),),
-                        SizedBox(height: 7,),
+                        const SizedBox(height: 7,),
                         RichText(text: TextSpan(
                           text: 'Percentage',
-                          style: GoogleFonts.ubuntu(
+                          style: GoogleFonts.sofiaSans(
                             color: Colors.white
                           )
                         ))
@@ -63,18 +66,20 @@ class _BinStatusState extends State<BinStatus> {
                       child: CircularPercentIndicator(
                         radius: 50,
                         lineWidth: 15,
-                        percent: 0.6,
+                        percent: 0.7,
                         circularStrokeCap: CircularStrokeCap.round,
+                        animation: true,
+                        animationDuration: 2000,
                         backgroundColor: Constants.bgColor,
                         linearGradient: const LinearGradient(colors: [
+                          Color(0xFF78E5E7),
+                          Color(0xFF4265D6),
                           Color(0xFF526ADA),
-                          Color(0xFF526ADA),
-                          Color(0xFF78E5E7)
                         ],
                           begin: Alignment.topCenter, end: Alignment.bottomCenter),
                         center: Text(
                           '70%',
-                          style: GoogleFonts.ubuntu(
+                          style: GoogleFonts.sofiaSans(
                             color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.w800
@@ -88,7 +93,7 @@ class _BinStatusState extends State<BinStatus> {
                 ),
               ],
               ),
-                SizedBox(height: 30,),
+                const SizedBox(height: 30,),
                 const Chart(),
             ],
             ),

@@ -1,6 +1,9 @@
+import 'package:capstone_clenro/models/user.dart';
 import 'package:capstone_clenro/widgets/list_data.dart';
 import 'package:flutter/material.dart';
 import 'package:capstone_clenro/widgets/nav_drawer.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:quickalert/quickalert.dart';
 
 
 
@@ -13,14 +16,40 @@ class HomePage extends StatefulWidget {
 
 class _HomePage extends State<HomePage> {
 
+  var username = '';
+  User? user;
+  var userList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getDataFromStorage();
+  }
+
+  Future? getDataFromStorage() async {
+    user = await User.getUser();
+    setState(() {});
+  }
+  void showAlert() async{
+    QuickAlert.show(
+        context: context,
+        title: "Successfully Collected",
+        text: "October 22, 2023 | 11:38 AM",
+        type: QuickAlertType.success,
+        showConfirmBtn: false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         drawer: const CustomNavigationDrawer(),
         appBar: AppBar(
-          title: const Text('Dashboard'),
+          title: Text('Dashboard',
+              style: GoogleFonts.sofiaSans(fontWeight: FontWeight.bold, fontSize: 22),
+          ),
           centerTitle: false,
-          backgroundColor: Colors.green,
+          backgroundColor: Color(0xFF009E60),
         ),
         body: SafeArea(
             child: CustomScrollView(
@@ -28,7 +57,7 @@ class _HomePage extends State<HomePage> {
                 SliverToBoxAdapter(
                   child: Container(height: 230, child: _head ()),
                 ),
-                const SliverToBoxAdapter(
+                SliverToBoxAdapter(
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Row(
@@ -36,7 +65,7 @@ class _HomePage extends State<HomePage> {
                       children: [
                         Text(
                           'Collection History',
-                          style: TextStyle(
+                          style: GoogleFonts.sofiaSans(
                             fontWeight: FontWeight.w600,
                             fontSize: 25,
                             color: Colors.black,
@@ -55,21 +84,21 @@ class _HomePage extends State<HomePage> {
                         ),
                         title: Text(
                           geter()[index].location!,
-                          style: TextStyle(
+                          style: GoogleFonts.sofiaSans(
                             fontSize: 17,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         subtitle: Text(
                           geter()[index].date!,
-                          style: TextStyle(
+                          style: GoogleFonts.sofiaSans(
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         trailing: const Icon(Icons.navigate_next_outlined),
-                        contentPadding: EdgeInsets.all(1),
+                        contentPadding: const EdgeInsets.all(1),
                         onTap: (){
-                          print('You just tapped!');
+                          showAlert();
                         },
                       );
                     },
@@ -92,7 +121,7 @@ class _HomePage extends State<HomePage> {
                   width: double.infinity,
                   height: 150,
                   decoration: const BoxDecoration(
-                    color: Colors.lightGreen,
+                    color: Color(0xFF00A36C),
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(20),
                       bottomRight: Radius.circular(20),
@@ -107,22 +136,22 @@ class _HomePage extends State<HomePage> {
                           borderRadius: BorderRadius.circular(7),
                         ),
                       ),
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.only(top: 20, left: 10),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              ' Good Day!',
-                              style: TextStyle(
+                              ' Welcome!',
+                              style: GoogleFonts.sofiaSans(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 40,
                                 color: Colors.white,
                               ),
                             ),
                             Text(
-                              '   Sterben',
-                              style: TextStyle(
+                              '  ${user?.username}',
+                              style: GoogleFonts.sofiaSans(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 30,
                                 color: Colors.white,
@@ -145,18 +174,18 @@ class _HomePage extends State<HomePage> {
                 decoration: BoxDecoration(
                   boxShadow: const [
                     BoxShadow(
-                      color: Color.fromRGBO(47, 125, 121, 0.3),
+                      color: Color.fromRGBO(49, 125, 121, 0.3),
                       offset: Offset(0, 6),
                       blurRadius: 12,
                       spreadRadius: 6,
                     ),
                   ],
-                  color: Colors.lightGreen,
+                  color: const Color(0xFF00A36C),
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: const Column(
+                child: Column(
                   children: [
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 15),
                       child: Row(
@@ -164,24 +193,24 @@ class _HomePage extends State<HomePage> {
                         children: [
                           Text(
                             'Last Garbage Collection:',
-                            style: TextStyle(
+                            style: GoogleFonts.sofiaSans(
                               fontWeight: FontWeight.w500,
                               fontSize: 16,
                               color: Colors.white,
                             ),
                           ),
-                          Icon(
+                          const Icon(
                             Icons.more_horiz,
                             color: Colors.white,
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Row(
                       children: [
                         Text('   \September 20. 2023',
-                            style: TextStyle(
+                            style: GoogleFonts.sofiaSans(
                               fontWeight: FontWeight.bold,
                               fontSize: 25,
                               color: Colors.white,

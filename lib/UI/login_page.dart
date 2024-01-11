@@ -1,7 +1,11 @@
-import 'package:capstone_clenro/UI/signup_page.dart';
+import 'package:capstone_clenro/UI/forgot_password.dart';
+import 'package:capstone_clenro/models/user.dart';
+import 'package:capstone_clenro/api_provider/api.dart';
 import 'package:capstone_clenro/widgets/navigation.dart';
 import 'package:capstone_clenro/widgets/reusabale_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'dart:convert' as convert;
 
 import '../utils/color_utils.dart';
 
@@ -13,6 +17,49 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
+  var _isObscured;
+
+  @override
+  void initState(){
+    super.initState();
+    _isObscured = true;
+  }
+
+  ApiProvider api = ApiProvider();
+  final formKey = GlobalKey<FormState>();
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  void logInUser(String username, String password, String route) async {
+    try {
+      var response = await api.login(username, password, route);
+      var user = convert.json.decode(response.body);
+      if (response.statusCode == 200) {
+        print(user);
+        User saveAuth = User(
+          id: user['user']['id'],
+          username: user['user']['username'],
+          userRole: user['user']['userRole'],
+          email: user['user']['email'],
+          gender: user['user']['gender'],
+          token: user['user']['token']['accessToken'],
+        );
+        // String jsonString = convert.json.encode(saveAuth.dataToJSON());
+        // print(jsonString);
+
+        await saveAuth.saveUser();
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=> const Navigation()), (route) => false);
+
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(user['message'].toString())));
+      }
+    } catch (error) {
+      print(error);
+    }
+  }
+
   @override
 
 
@@ -27,97 +74,108 @@ class _LoginPageState extends State<LoginPage> {
               hexStringColor("#0081A7"),
               hexStringColor("#00AFB9"),
               hexStringColor("#A2FF86"),
-
             ], begin: Alignment.topCenter, end: Alignment.bottomCenter
             )
         ),
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.fromLTRB(20, MediaQuery.of(context).size.height *0.2, 20, 0),
+            padding: EdgeInsets.fromLTRB(20, MediaQuery.of(context).size.height *0.19, 20, 0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                logoWidget("images/clogo.png"),
-                const Text(
-                  '  Sign In',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 35.0,
-                    fontWeight: FontWeight.bold,
+                logoWidget("images/logo1.png"),
+                Container(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    '  Sign In',
+                    textAlign: TextAlign.left,
+                    style: GoogleFonts.sofiaSans(
+                      color: Colors.black,
+                      fontSize: 35.0,
+                      fontWeight: FontWeight.bold,
+                    )
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Padding(padding: const EdgeInsets.all(8.0),
                   child: TextField(
+                    controller: usernameController,
                     obscureText: false,
                     decoration: InputDecoration(
                       labelText: 'Username',
-                      prefixIcon: Icon(
-                          Icons.alternate_email_outlined,
-                          color: Colors.black
+                      hintText: 'exampleuser@gmail.com',
+                      prefixIcon: const Icon(
+                          Icons.alternate_email,
+                          color: Colors.teal
                       ),
                       labelStyle: TextStyle(color: Colors.black26.withOpacity(0.9)),
                       filled: true,
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                       fillColor: Colors.white.withOpacity(0.3),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide: const BorderSide(width: 0, style: BorderStyle.none)),
+                      border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          borderSide: BorderSide(width: 0, style: BorderStyle.none)),
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 0.1,
                 ),
                 Padding(padding: const EdgeInsets.all(8.0),
                   child: TextField(
-                    obscureText: true,
+                    controller: passwordController,
+                    obscureText: _isObscured,
                     decoration: InputDecoration(
                       labelText: 'Password',
-                      prefixIcon: Icon(
-                          Icons.lock_outlined,
-                          color: Colors.black
+                      prefixIcon: const Icon(
+                          Icons.lock,
+                          color: Colors.teal
+                      ),
+                      suffixIcon: IconButton(
+                        padding: const EdgeInsetsDirectional.only(end: 12.0),
+                        icon: _isObscured ?
+                        const Icon(Icons.visibility, color: Colors.teal,) :
+                        const Icon(Icons.visibility_off, color: Colors.teal,),
+                        onPressed: (){
+                          setState(() {
+                            _isObscured =! _isObscured;
+                          });
+                        },
                       ),
                       labelStyle: TextStyle(color: Colors.black26.withOpacity(0.9)),
                       filled: true,
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                       fillColor: Colors.white.withOpacity(0.3),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide: const BorderSide(width: 0, style: BorderStyle.none)),
+                      border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          borderSide: BorderSide(width: 0, style: BorderStyle.none)),
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-                forgotPassword(),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 GestureDetector(
-                  onTap: ()  {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => Navigation(),
-                      ),
-                    );
+                  onTap: () {
+                    logInUser(usernameController.text, passwordController.text, 'auth/signin');
                   },
                   child: Container(
                     width: size.width,
                     decoration: BoxDecoration(
-                      color: Colors.blueGrey,
+                      color: Colors.teal[900],
                       borderRadius: BorderRadius.circular(10),
                     ),
                     padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                    child: const Center(
+                    child: Center(
                       child: Text(
                         'Sign In',
-                        style: TextStyle(
+                        style: GoogleFonts.sofiaSans(
                           color: Colors.white,
                           fontSize: 18.0,
                         ),
@@ -126,9 +184,9 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
-                signUpOption(),
+                forgotPassword(),
               ],
             ),
           ),
@@ -136,39 +194,22 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-  Row forgotPassword() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        GestureDetector(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SignupPage()));
-            },
-            child: const Text (
-              "Forgot Password?",
-              style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
-            )
-        )
-      ],
-    );
-  }
 
-  Row signUpOption() {
+  Row forgotPassword() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text("Don't have account?",
-            style: TextStyle(color: Colors.black)
+        Text("Forgot Password?",
+            style: GoogleFonts.sofiaSans(color: Colors.black)
         ),
         GestureDetector(
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SignupPage()));
+                  MaterialPageRoute(builder: (context) => const ForgotPasswordPage()));
             },
-            child: const Text (
-              "Sign Up",
-              style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
+            child: Text (
+              " click here",
+              style: GoogleFonts.sofiaSans(color: Colors.black,fontWeight: FontWeight.bold),
             )
         )
       ],
